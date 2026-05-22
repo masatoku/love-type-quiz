@@ -4,93 +4,99 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { questions, calcType, type Answer } from "@/data/questions";
 
-const OPTIONS: { label: string; value: Answer }[] = [
-  { label: "とてもあてはまる", value: -2 },
-  { label: "ややあてはまる", value: -1 },
-  { label: "どちらでもない", value: 0 },
-  { label: "ややあてはまる", value: 1 },
-  { label: "とてもあてはまる", value: 2 },
-];
-
 export default function QuizPage() {
   const router = useRouter();
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<number, Answer>>({});
+  const [animating, setAnimating] = useState(false);
 
   const q = questions[current];
-  const progress = Math.round((current / questions.length) * 100);
-  const selected = answers[q.id];
+  const total = questions.length;
+  const filled = current;
 
   function select(value: Answer) {
+    if (animating) return;
     const newAnswers = { ...answers, [q.id]: value };
     setAnswers(newAnswers);
+    setAnimating(true);
 
-    if (current < questions.length - 1) {
-      setTimeout(() => setCurrent(current + 1), 250);
-    } else {
-      const type = calcType(newAnswers);
-      router.push(`/result/${type.toLowerCase()}`);
-    }
+    setTimeout(() => {
+      if (current < total - 1) {
+        setCurrent(current + 1);
+        setAnimating(false);
+      } else {
+        const type = calcType(newAnswers);
+        router.push(`/result/${type.toLowerCase()}`);
+      }
+    }, 320);
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
-      <div className="w-full max-w-lg">
-        {/* ヘッダー */}
-        <div className="text-center mb-8">
-          <p className="text-sm text-pink-500 font-semibold mb-1">質問 {current + 1} / {questions.length}</p>
-          <div className="progress-bar mb-4">
-            <div className="progress-fill" style={{ width: `${progress}%` }} />
-          </div>
+    <div className="bg-hero min-h-screen flex flex-col items-center justify-center px-5 py-10">
+
+      {/* ヘッダー：ハートの進捗 */}
+      <div className="w-full max-w-sm mb-8">
+        <div className="flex justify-between items-center mb-3">
+          <button
+            onClick={() => current > 0 && setCurrent(current - 1)}
+            className={`text-white/40 hover:text-white/80 text-sm transition-colors ${current === 0 ? "invisible" : ""}`}
+          >
+            ← 戻る
+          </button>
+          <span className="text-white/50 text-sm font-medium">
+            {current + 1} <span className="text-white/30">/</span> {total}
+          </span>
+          <div className="w-10" />
         </div>
 
-        {/* 質問カード */}
-        <div className="card p-8 mb-6">
-          <p className="text-center text-lg font-bold text-gray-800 mb-8 leading-relaxed">
-            Q{current + 1}. {q.text}
-          </p>
+        {/* ハートの進捗バー */}
+        <div className="progress-hearts">
+          {Array.from({ length: total }).map((_, i) => (
+            <span key={i} className={i < filled ? "heart-filled" : "heart-empty"}>
+              {i < filled ? "❤️" : "🤍"}
+            </span>
+          ))}
+        </div>
+      </div>
 
-          {/* 両端ラベル */}
-          <div className="flex justify-between text-xs text-gray-400 mb-3 px-2">
-            <span>👈 {q.labelA}</span>
-            <span>{q.labelB} 👉</span>
-          </div>
-
-          {/* 5択ボタン */}
-          <div className="grid grid-cols-5 gap-2">
-            {OPTIONS.map((opt, i) => {
-              const isA = i < 2;
-              const isSelected = selected === opt.value;
-              return (
-                <button
-                  key={i}
-                  onClick={() => select(opt.value)}
-                  className={`answer-btn py-4 flex flex-col items-center gap-1 ${isSelected ? "selected" : ""}`}
-                  title={opt.label}
-                >
-                  <span className={`text-xl font-bold ${isA ? "text-pink-400" : "text-purple-400"} ${i === 2 ? "text-gray-300" : ""}`}>
-                    {i === 0 ? "◉" : i === 1 ? "●" : i === 2 ? "○" : i === 3 ? "●" : "◉"}
-                  </span>
-                  <span className="text-xs text-gray-400 hidden sm:block leading-tight text-center">
-                    {i === 0 || i === 4 ? "強く" : i === 1 || i === 3 ? "やや" : "どちら\nでも"}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+      {/* 質問カード */}
+      <div
+        key={current}
+        className="w-full max-w-sm animate-scale-in"
+        style={{ opacity: animating ? 0 : 1, transition: "opacity 0.3s" }}
+      >
+        {/* 軸バッジ */}
+        <div className="text-center mb-4">
+          <span className="glass text-xs text-purple-300 font-semibold px-3 py-1 rounded-full">
+            {{EI:"外向 vs 内向", NS:"直感 vs 感覚", TF:"思考 vs 感情", JP:"計画 vs 柔軟"}[q.axis]}
+          </span>
         </div>
 
-        {/* 戻るボタン */}
-        {current > 0 && (
-          <div className="text-center">
-            <button
-              onClick={() => setCurrent(current - 1)}
-              className="text-sm text-gray-400 hover:text-gray-600"
-            >
-              ← 前の質問に戻る
-            </button>
-          </div>
-        )}
+        {/* 質問テキスト */}
+        <div className="glass rounded-3xl p-6 mb-6 text-center">
+          <p className="text-white font-bold text-xl leading-relaxed">{q.text}</p>
+        </div>
+
+        {/* A/B 選択カード */}
+        <div className="space-y-4">
+          <button
+            className={`choice-card ${answers[q.id] === -2 ? "selected-a" : ""}`}
+            onClick={() => select(-2)}
+          >
+            <div className="text-4xl mb-2">{q.emojiA}</div>
+            <div className="text-white font-bold">{q.labelA}</div>
+          </button>
+
+          <div className="text-center text-white/30 text-sm font-medium">— または —</div>
+
+          <button
+            className={`choice-card ${answers[q.id] === 2 ? "selected-b" : ""}`}
+            onClick={() => select(2)}
+          >
+            <div className="text-4xl mb-2">{q.emojiB}</div>
+            <div className="text-white font-bold">{q.labelB}</div>
+          </button>
+        </div>
       </div>
     </div>
   );

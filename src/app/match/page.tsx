@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { personalities, typeList } from "@/data/personalities";
+import { typeThemes } from "@/data/typeThemes";
 import type { TypeCode } from "@/data/questions";
 
 export default function MatchPage() {
@@ -23,64 +24,81 @@ export default function MatchPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
-      <div className="w-full max-w-lg">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-black text-gray-800 mb-2">💑 相性診断</h1>
-          <p className="text-gray-500 text-sm">相手の恋愛タイプを選んでください</p>
+    <div className="bg-hero min-h-screen px-5 py-12">
+      <div className="max-w-sm mx-auto">
+
+        {/* ヘッダー */}
+        <div className="text-center mb-8 animate-fade-up">
+          <Link href="/" className="text-white/40 text-sm hover:text-white/70 block mb-4">← 戻る</Link>
+          <div className="text-5xl mb-3">💑</div>
+          <h1 className="text-3xl font-black text-white mb-2">相性診断</h1>
+          <p className="text-white/50 text-sm">相手のタイプを選んでください</p>
         </div>
 
-        {/* 自分のタイプ表示 */}
-        {myType && (
-          <div className="card p-4 mb-5 flex items-center gap-3">
-            <span className="text-2xl">{personalities[myType].emoji}</span>
-            <div>
-              <p className="text-xs text-gray-400">あなた</p>
-              <p className="font-bold text-gray-700">{personalities[myType].name}（{myType}）</p>
+        {/* 自分のタイプ */}
+        {myType ? (
+          <div className="glass rounded-3xl p-4 mb-5 animate-fade-up delay-100 flex items-center gap-3">
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0"
+              style={{ background: typeThemes[myType].gradient }}
+            >
+              {personalities[myType].emoji}
             </div>
-            <Link href="/quiz" className="ml-auto text-xs text-purple-500 hover:underline">変更</Link>
+            <div className="flex-1 min-w-0">
+              <p className="text-white/40 text-xs">あなた</p>
+              <p className="text-white font-bold text-sm">{personalities[myType].name}（{myType}）</p>
+            </div>
+            <Link href="/quiz" className="text-xs shrink-0 px-3 py-1.5 rounded-full border border-white/20 text-white/50 hover:text-white/80">
+              変更
+            </Link>
+          </div>
+        ) : (
+          <div className="glass rounded-3xl p-5 mb-5 text-center animate-fade-up delay-100">
+            <p className="text-white/50 text-sm mb-3">先に自分のタイプを診断しましょう</p>
+            <Link href="/quiz" className="btn-cta text-sm py-2.5 px-6 inline-block">診断する</Link>
           </div>
         )}
 
-        {!myType && (
-          <div className="card p-4 mb-5 text-center">
-            <p className="text-sm text-gray-500 mb-2">先に自分のタイプを診断しましょう</p>
-            <Link href="/quiz" className="btn-primary inline-block text-sm py-2 px-6">診断する</Link>
-          </div>
-        )}
-
-        {/* 相手のタイプ選択 */}
-        <div className="card p-5 mb-5">
-          <h2 className="font-bold text-gray-700 mb-4 text-sm">相手のタイプを選んでください</h2>
+        {/* 相手タイプ選択 */}
+        <div className="glass rounded-3xl p-5 mb-5 animate-fade-up delay-200">
+          <h2 className="text-white/60 text-xs font-semibold mb-4 uppercase tracking-wider">相手のタイプを選んでください</h2>
           <div className="grid grid-cols-4 gap-2">
             {typeList.map((t) => {
               const tp = personalities[t];
+              const th = typeThemes[t];
               const isSelected = partnerType === t;
               return (
                 <button
                   key={t}
                   onClick={() => setPartnerType(t)}
-                  className={`text-center p-3 rounded-xl text-xs transition-all border-2 ${
-                    isSelected
-                      ? "border-purple-400 bg-purple-50 font-bold"
-                      : "border-transparent bg-gray-50 hover:bg-purple-50 hover:border-purple-200"
-                  }`}
+                  className="type-select-btn"
+                  style={isSelected ? {
+                    background: th.gradient,
+                    borderColor: "transparent",
+                    boxShadow: `0 0 16px ${th.glow}`,
+                  } : {}}
                 >
                   <div className="text-2xl mb-1">{tp.emoji}</div>
-                  <div className="font-mono text-gray-600 text-xs">{t}</div>
-                  <div className="text-gray-400 text-xs mt-0.5 hidden sm:block">{tp.name}</div>
+                  <div className="font-mono text-xs">{t}</div>
+                  <div className="text-xs text-white/40 mt-0.5 leading-tight hidden sm:block">{tp.name}</div>
                 </button>
               );
             })}
           </div>
         </div>
 
+        {/* 選択中の相手 */}
         {partnerType && (
-          <div className="card p-4 mb-5 flex items-center gap-3">
-            <span className="text-2xl">{personalities[partnerType].emoji}</span>
+          <div className="glass rounded-3xl p-4 mb-5 animate-scale-in flex items-center gap-3">
+            <div
+              className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0"
+              style={{ background: typeThemes[partnerType].gradient }}
+            >
+              {personalities[partnerType].emoji}
+            </div>
             <div>
-              <p className="text-xs text-gray-400">相手</p>
-              <p className="font-bold text-gray-700">{personalities[partnerType].name}（{partnerType}）</p>
+              <p className="text-white/40 text-xs">相手</p>
+              <p className="text-white font-bold text-sm">{personalities[partnerType].name}（{partnerType}）</p>
             </div>
           </div>
         )}
@@ -88,10 +106,12 @@ export default function MatchPage() {
         <button
           onClick={goResult}
           disabled={!partnerType}
-          className={`btn-primary w-full ${!partnerType ? "opacity-50 cursor-not-allowed" : ""}`}
+          className={`btn-cta w-full ${!partnerType ? "opacity-40 cursor-not-allowed" : ""}`}
+          style={!partnerType ? { animation: "none" } : {}}
         >
           💕 相性を診断する
         </button>
+
       </div>
     </div>
   );
