@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { personalities, typeList } from "@/data/personalities";
 import { typeThemes } from "@/data/typeThemes";
+import TypeIcon from "@/components/TypeIcon";
 import type { TypeCode } from "@/data/questions";
 
 export default function MatchPage() {
@@ -42,7 +43,7 @@ export default function MatchPage() {
               className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0"
               style={{ background: typeThemes[myType].gradient }}
             >
-              {personalities[myType].emoji}
+              <TypeIcon type={myType} size={32} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-white/40 text-xs">あなた</p>
@@ -78,7 +79,7 @@ export default function MatchPage() {
                     boxShadow: `0 0 16px ${th.glow}`,
                   } : {}}
                 >
-                  <div className="text-2xl mb-1">{tp.emoji}</div>
+                  <TypeIcon type={t} size={28} className="mx-auto mb-1" />
                   <div className="font-mono text-xs">{t}</div>
                   <div className="text-xs text-white/40 mt-0.5 leading-tight hidden sm:block">{tp.name}</div>
                 </button>
@@ -94,7 +95,7 @@ export default function MatchPage() {
               className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0"
               style={{ background: typeThemes[partnerType].gradient }}
             >
-              {personalities[partnerType].emoji}
+              <TypeIcon type={partnerType} size={32} />
             </div>
             <div>
               <p className="text-white/40 text-xs">相手</p>
