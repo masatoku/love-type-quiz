@@ -25,15 +25,15 @@ export default function MatchPage() {
   }
 
   return (
-    <div className="bg-hero min-h-screen px-5 py-12">
+    <div className="min-h-screen px-5 py-12 relative z-10">
       <div className="max-w-sm mx-auto">
 
         {/* ヘッダー */}
         <div className="text-center mb-8 animate-fade-up">
-          <Link href="/" className="text-white/40 text-sm hover:text-white/70 block mb-4">← 戻る</Link>
+          <p className="text-xs mb-4" style={{ color: "var(--gold)", letterSpacing: "0.2em", fontFamily: "var(--font-ui)", opacity: 0.6 }}>✦ COMPATIBILITY READING ✦</p>
           <div className="text-5xl mb-3">💑</div>
-          <h1 className="text-3xl font-black text-white mb-2">相性診断</h1>
-          <p className="text-white/50 text-sm">相手のタイプを選んでください</p>
+          <h1 className="text-3xl font-black text-white mb-2">相性の星読み</h1>
+          <p className="text-white/40 text-sm">相手のタイプを選んでください</p>
         </div>
 
         {/* 自分のタイプ */}
