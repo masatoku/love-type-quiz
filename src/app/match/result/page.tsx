@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { personalities } from "@/data/personalities";
 import { typeThemes } from "@/data/typeThemes";
 import { getCompatibility } from "@/data/compatibility";
-import TypeIcon from "@/components/TypeIcon";
+import TypeCharacter from "@/components/TypeCharacter";
 import type { TypeCode } from "@/data/questions";
 
 function MatchResult() {
@@ -59,7 +59,7 @@ function MatchResult() {
               className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-1"
               style={{ background: meTheme.gradient, boxShadow: `0 0 20px ${meTheme.glow}` }}
             >
-              <TypeIcon type={myType} size={36} />
+              <TypeCharacter type={myType} size={36} />
             </div>
             <p className="text-white/80 text-xs font-mono font-bold">{myType}</p>
           </div>
@@ -69,7 +69,7 @@ function MatchResult() {
               className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-1"
               style={{ background: partnerTheme.gradient, boxShadow: `0 0 20px ${partnerTheme.glow}` }}
             >
-              <TypeIcon type={partnerType} size={36} />
+              <TypeCharacter type={partnerType} size={36} />
             </div>
             <p className="text-white/80 text-xs font-mono font-bold">{partnerType}</p>
           </div>

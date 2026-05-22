@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { personalities, typeList } from "@/data/personalities";
 import { typeThemes } from "@/data/typeThemes";
-import TypeIcon from "@/components/TypeIcon";
+import TypeCharacter from "@/components/TypeCharacter";
 import type { TypeCode } from "@/data/questions";
 
 export default function ResultClient({ typeCode }: { typeCode: TypeCode }) {
@@ -47,7 +47,7 @@ export default function ResultClient({ typeCode }: { typeCode: TypeCode }) {
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 30% 70%, white 0%, transparent 50%)" }} />
 
         <div className="animate-scale-in mb-3 relative z-10">
-          <TypeIcon type={typeCode} size={96} />
+          <TypeCharacter type={typeCode} size={96} />
         </div>
         <div className="animate-fade-up delay-100 relative z-10">
           <p className="text-white/70 text-sm font-semibold mb-1 uppercase tracking-widest">Your Type</p>
@@ -130,7 +130,7 @@ export default function ResultClient({ typeCode }: { typeCode: TypeCode }) {
                     ? { background: th.gradient, boxShadow: `0 0 12px ${th.glow}` }
                     : { background: "rgba(255,255,255,0.05)" }}
                 >
-                  <TypeIcon type={t} size={28} className="mb-1" />
+                  <TypeCharacter type={t} size={28} className="mb-1" />
                   <div className="font-mono text-white/60 text-xs">{t}</div>
                 </Link>
               );
