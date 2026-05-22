@@ -29,7 +29,7 @@ export default function QuizPage() {
       setTimeout(() => setCurrent(current + 1), 250);
     } else {
       const type = calcType(newAnswers);
-      router.push(`/result/${type}`);
+      router.push(`/result/${type.toLowerCase()}`);
     }
   }
 
